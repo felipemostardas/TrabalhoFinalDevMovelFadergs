@@ -1,4 +1,21 @@
 <resources>
-    <string name="app_name">TrabalhoFinalDevMovelFadergs</string>
-    <string name="title_activity_meus_anuncios">MeusAnunciosActivity</string>
+    <string name="app_name">Dev. Movel Fadergs</string>
+    <string name="title_activity_meus_anuncios">Meus Anúncios</string>
+    <string-array name="estados">
+        <item>RS</item>
+        <item>SC</item>
+        <item>PR</item>
+    </string-array>
+
+    <string-array name="categorias">
+        <item>Automóveis</item>
+        <item>Imoveis</item>
+        <item>Eletronicos</item>
+        <item>Moda</item>
+        <item>Esportes</item>
+        <item>Música</item>
+        <item>Infantil</item>
+        <item>Agro</item>
+
+    </string-array>
 </resources>
