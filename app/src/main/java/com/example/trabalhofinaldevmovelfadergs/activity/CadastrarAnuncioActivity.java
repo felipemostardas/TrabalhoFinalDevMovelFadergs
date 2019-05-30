@@ -21,7 +21,14 @@ import android.widget.Toast;
 
 import com.blackcat.currencyedittext.CurrencyEditText;
 import com.example.trabalhofinaldevmovelfadergs.R;
+import com.example.trabalhofinaldevmovelfadergs.helper.ConfiguracaoFirebase;
 import com.example.trabalhofinaldevmovelfadergs.helper.Permissoes;
+import com.example.trabalhofinaldevmovelfadergs.model.Anuncio;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,17 +42,24 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
     private Spinner campoEstado, campoCategoria;
     private CurrencyEditText campoValor;
     private EditText campoTelefone;
+    private Anuncio anuncio;
+    private StorageReference storage;
 
     private String[] permissoes = new String[]{
             Manifest.permission.READ_EXTERNAL_STORAGE
     };
 
     private List<String> listaFotosRecuperadas = new ArrayList<>();
+    private List<String> listaURLFotos = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cadastrar_anuncio);
+
+        //Configurações iniciais
+        storage = ConfiguracaoFirebase.getFirebaseStorage();
+
 
         //validar permissões
         Permissoes.validarPermissoes(permissoes, this, 1);
@@ -54,62 +68,115 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
         carregarDadosSpinner();
     }
 
+    public void salvarAnuncio(){
 
-    public void validarDadosAnuncio(View view){
-       // String fone = "";
+        //Salvar imagens no Storage
+        for(int i=0; i < listaFotosRecuperadas.size(); i++){
+            String urlImagem = listaFotosRecuperadas.get(i);
+            int tamanhoLista = listaFotosRecuperadas.size();
+            salvarFotoStorage(urlImagem, tamanhoLista, i);
+        }
+
+
+    }
+
+    private void salvarFotoStorage(String urlString, final int totalFotos, int contador){
+
+        //criar referencia no Storage
+        StorageReference imagemAnuncio = storage.child("imagens")
+                .child("anuncios")
+                .child(anuncio.getIdAnuncio() )
+                .child("imagem"+contador);
+
+        //Fazer upload dos arquivos de foto
+        UploadTask uploadTask = imagemAnuncio.putFile(Uri.parse(urlString));
+        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+               // Uri firebaseUrl = taskSnapshot.getDownloadUrl();
+               // String urlConvertida = firebaseUrl.toString();
+
+               // listaURLFotos.add( urlConvertida );
+
+                if(totalFotos == listaURLFotos.size() ){
+                    anuncio.setFotos( listaURLFotos );
+                    anuncio.salvar();
+
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                exibirMensagemErro("falha ao fazer upload");
+                Log.i("INFO", "Falha ao fazer upload: " + e.getMessage());
+            }
+        });
+
+    }
+
+    private Anuncio configurarAnuncio(){
+
         String estado = campoEstado.getSelectedItem().toString();
         String categoria = campoCategoria.getSelectedItem().toString();
         String titulo = campoTitulo.getText().toString();
         String valor = String.valueOf(campoValor.getRawValue());
         String telefone = campoTelefone.getText().toString();
-        //if(campoTelefone.getRawText() != null){
-        //}
-        //String fone = campoTelefone.getRawText().toString();
         String descricao = campoDescricao.getText().toString();
 
-        if (listaFotosRecuperadas.size()!= 0 ){
-            if( !estado.isEmpty() ){
-                if( !categoria.isEmpty() ){
-                    if( !titulo.isEmpty() ){
-                        if( !valor.isEmpty() && !valor.equals("0") ){
-                            if( !telefone.isEmpty() /* && fone.length() >=10*/){
-                                if( !descricao.isEmpty() ){
+        Anuncio anuncio = new Anuncio();
+        //anuncio.getIdAnuncio();
+        anuncio.setEstado(estado);
+        anuncio.setCategoria(categoria);
+        anuncio.setTitulo(titulo);
+        anuncio.setValor(valor);
+        anuncio.setTelefone(telefone);
+        anuncio.setDescricao(descricao);
+
+        return anuncio;
+    }
+
+
+    public void validarDadosAnuncio(View view){
+
+        anuncio = configurarAnuncio();
+
+        if( listaFotosRecuperadas.size() != 0  ){
+            if( !anuncio.getEstado().isEmpty() ){
+                if( !anuncio.getCategoria().isEmpty() ){
+                    if( !anuncio.getTitulo().isEmpty() ){
+                        if( !anuncio.getValor().isEmpty() && !anuncio.getValor().equals("0") ){
+                            if( !anuncio.getTelefone().isEmpty()  ){
+                                if( !anuncio.getDescricao().isEmpty() ){
+
                                     salvarAnuncio();
+
                                 }else {
-                                    exibirMensagemErro("Preencha o campo descrição.");
+                                    exibirMensagemErro("Preencha o campo descrição");
                                 }
                             }else {
-                                exibirMensagemErro("Preencha o campo telefone.");
+                                exibirMensagemErro("Preencha o campo telefone");
                             }
-
                         }else {
-                            exibirMensagemErro("Preencha o campo valor.");
+                            exibirMensagemErro("Preencha o campo valor");
                         }
                     }else {
-                        exibirMensagemErro("Preencha o campo título.");
+                        exibirMensagemErro("Preencha o campo título");
                     }
                 }else {
-                    exibirMensagemErro("Preencha o campo categoria.");
+                    exibirMensagemErro("Preencha o campo categoria");
                 }
             }else {
-                exibirMensagemErro("Preencha o campo estado.");
+                exibirMensagemErro("Preencha o campo estado");
             }
         }else {
-            exibirMensagemErro("Selecione pelo menos uma foto.");
+            exibirMensagemErro("Selecione ao menos uma foto!");
         }
-
-        }
-    private void exibirMensagemErro(String mensagem){
-        Toast.makeText(this, mensagem,Toast.LENGTH_SHORT).show();
-    }
-
-    public void salvarAnuncio(){
-
-        String valor = campoValor.getText().toString();
-        Log.d("salvar", "salvarAnuncio: " + valor );
 
     }
 
+    private void exibirMensagemErro(String texto){
+        Toast.makeText(this, texto, Toast.LENGTH_SHORT).show();
+    }
 
 
     @Override
