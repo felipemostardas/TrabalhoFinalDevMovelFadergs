@@ -26,6 +26,7 @@ import com.example.trabalhofinaldevmovelfadergs.helper.Permissoes;
 import com.example.trabalhofinaldevmovelfadergs.model.Anuncio;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -93,10 +94,10 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
         uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-               // Uri firebaseUrl = taskSnapshot.getDownloadUrl();
-               // String urlConvertida = firebaseUrl.toString();
+                Task<Uri> firebaseUrl = taskSnapshot.getStorage().getDownloadUrl();
+                String urlConvertida = firebaseUrl.toString();
 
-               // listaURLFotos.add( urlConvertida );
+                listaURLFotos.add( urlConvertida );
 
                 if(totalFotos == listaURLFotos.size() ){
                     anuncio.setFotos( listaURLFotos );
@@ -104,6 +105,8 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
 
                 }
             }
+
+
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
@@ -119,7 +122,7 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
         String estado = campoEstado.getSelectedItem().toString();
         String categoria = campoCategoria.getSelectedItem().toString();
         String titulo = campoTitulo.getText().toString();
-        String valor = String.valueOf(campoValor.getRawValue());
+        String valor = campoValor.getText().toString();
         String telefone = campoTelefone.getText().toString();
         String descricao = campoDescricao.getText().toString();
 
@@ -139,12 +142,13 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
     public void validarDadosAnuncio(View view){
 
         anuncio = configurarAnuncio();
+        String valor = String.valueOf(campoValor.getRawValue());
 
         if( listaFotosRecuperadas.size() != 0  ){
             if( !anuncio.getEstado().isEmpty() ){
                 if( !anuncio.getCategoria().isEmpty() ){
                     if( !anuncio.getTitulo().isEmpty() ){
-                        if( !anuncio.getValor().isEmpty() && !anuncio.getValor().equals("0") ){
+                        if( !valor.isEmpty() && !valor.equals("0") ){
                             if( !anuncio.getTelefone().isEmpty()  ){
                                 if( !anuncio.getDescricao().isEmpty() ){
 
