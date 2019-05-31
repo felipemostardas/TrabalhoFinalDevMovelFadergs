@@ -39,6 +39,9 @@ dependencies {
     //Dependencia mascara de telefone
     //implementation 'com.github.santalu:mask-edittext:1.1.1'
 
+    //dependecia da barra de carregamento
+    implementation 'com.github.d-max:spots-dialog:1.1@aar'
+
 
 }
 

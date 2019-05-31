@@ -2,13 +2,13 @@ package com.example.trabalhofinaldevmovelfadergs.activity;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -35,6 +35,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import dmax.dialog.SpotsDialog;
+
 public class CadastrarAnuncioActivity extends AppCompatActivity
             implements View.OnClickListener {
 
@@ -45,6 +47,7 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
     private EditText campoTelefone;
     private Anuncio anuncio;
     private StorageReference storage;
+    private AlertDialog dialog;
 
     private String[] permissoes = new String[]{
             Manifest.permission.READ_EXTERNAL_STORAGE
@@ -70,6 +73,13 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
     }
 
     public void salvarAnuncio(){
+
+        dialog = new SpotsDialog.Builder()
+                .setContext(this)
+                .setMessage("Salvando Anúncio")
+                .setCancelable(false)
+                .build();
+        dialog.show();
 
         //Salvar imagens no Storage
         for(int i=0; i < listaFotosRecuperadas.size(); i++){
@@ -102,6 +112,9 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
                 if(totalFotos == listaURLFotos.size() ){
                     anuncio.setFotos( listaURLFotos );
                     anuncio.salvar();
+
+                    dialog.dismiss();
+                    finish();
 
                 }
             }
