@@ -82,6 +82,7 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
         dialog.show();
 
         //Salvar imagens no Storage
+
         for(int i=0; i < listaFotosRecuperadas.size(); i++){
             String urlImagem = listaFotosRecuperadas.get(i);
             int tamanhoLista = listaFotosRecuperadas.size();
