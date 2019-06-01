@@ -3,7 +3,6 @@ package com.example.trabalhofinaldevmovelfadergs.activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -13,18 +12,17 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 import com.example.trabalhofinaldevmovelfadergs.R;
 import com.example.trabalhofinaldevmovelfadergs.adapter.AdapterAnuncios;
 import com.example.trabalhofinaldevmovelfadergs.helper.ConfiguracaoFirebase;
 import com.example.trabalhofinaldevmovelfadergs.helper.RecyclerItemClickListener;
 import com.example.trabalhofinaldevmovelfadergs.model.Anuncio;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -142,4 +140,3 @@ public class MeusAnunciosActivity extends AppCompatActivity {
     }
 
 }
-
