@@ -1,5 +1,6 @@
 package com.example.trabalhofinaldevmovelfadergs.activity;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -10,10 +11,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.AdapterView;
 
 import com.example.trabalhofinaldevmovelfadergs.R;
 import com.example.trabalhofinaldevmovelfadergs.adapter.AdapterAnuncios;
 import com.example.trabalhofinaldevmovelfadergs.helper.ConfiguracaoFirebase;
+import com.example.trabalhofinaldevmovelfadergs.helper.RecyclerItemClickListener;
 import com.example.trabalhofinaldevmovelfadergs.model.Anuncio;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -25,25 +28,29 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import dmax.dialog.SpotsDialog;
+
 public class MeusAnunciosActivity extends AppCompatActivity {
 
     private RecyclerView recyclerAnuncios;
     private List<Anuncio> anuncios = new ArrayList<>();
     private AdapterAnuncios adapterAnuncios;
     private DatabaseReference anuncioUsuarioRef;
+    private AlertDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_meus_anuncios);
 
-        //configurações iniciais
+        //Configurações iniciais
         anuncioUsuarioRef = ConfiguracaoFirebase.getFirebase()
                 .child("meus_anuncios")
-                .child(ConfiguracaoFirebase.getIdUsuario());
+                .child( ConfiguracaoFirebase.getIdUsuario() );
 
         inicializarComponentes();
-        Toolbar toolbar = findViewById(R.id.toolbar);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = findViewById(R.id.fab);
@@ -55,42 +62,76 @@ public class MeusAnunciosActivity extends AppCompatActivity {
         });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        //configurar recyclerview
+        //Configurar RecyclerView
         recyclerAnuncios.setLayoutManager(new LinearLayoutManager(this));
         recyclerAnuncios.setHasFixedSize(true);
         adapterAnuncios = new AdapterAnuncios(anuncios, this);
-        recyclerAnuncios.setAdapter(adapterAnuncios);
+        recyclerAnuncios.setAdapter( adapterAnuncios );
 
-        //recuperar anuncios para o usuario
+        //Recupera anúncios para o usuário
         recuperarAnuncios();
 
+        //Adiciona evento de clique no recyclerview
+        recyclerAnuncios.addOnItemTouchListener(
+                new RecyclerItemClickListener(
+                        this,
+                        recyclerAnuncios,
+                        new RecyclerItemClickListener.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(View view, int position) {
+
+                            }
+
+                            @Override
+                            public void onLongItemClick(View view, int position) {
+
+                                Anuncio anuncioSelecionado = anuncios.get(position);
+                                anuncioSelecionado.remover();
+
+                                adapterAnuncios.notifyDataSetChanged();
+
+                            }
+
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                            }
+                        }
+                )
+        );
 
     }
 
     private void recuperarAnuncios(){
 
+        dialog = new SpotsDialog.Builder()
+                .setContext( this )
+                .setMessage("Recuperando anúncios")
+                .setCancelable( false )
+                .build();
+        dialog.show();
+
         anuncioUsuarioRef.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            public void onDataChange(DataSnapshot dataSnapshot) {
 
                 anuncios.clear();
                 for ( DataSnapshot ds : dataSnapshot.getChildren() ){
-
-                    anuncios.add(ds.getValue(Anuncio.class));
-
+                    anuncios.add( ds.getValue(Anuncio.class) );
                 }
 
-                Collections.reverse(anuncios);
+                Collections.reverse( anuncios );
                 adapterAnuncios.notifyDataSetChanged();
+
+                dialog.dismiss();
 
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+            public void onCancelled(DatabaseError databaseError) {
 
             }
         });
-
 
     }
 
@@ -101,3 +142,4 @@ public class MeusAnunciosActivity extends AppCompatActivity {
     }
 
 }
+

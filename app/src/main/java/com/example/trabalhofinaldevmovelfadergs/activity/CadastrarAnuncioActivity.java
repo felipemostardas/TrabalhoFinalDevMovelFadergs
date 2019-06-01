@@ -35,6 +35,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import dmax.dialog.SpotsDialog;
+
 public class CadastrarAnuncioActivity extends AppCompatActivity
             implements View.OnClickListener {
 
@@ -45,6 +47,7 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
     private EditText campoTelefone;
     private Anuncio anuncio;
     private StorageReference storage;
+    private android.app.AlertDialog dialog;
 
     private String[] permissoes = new String[]{
             Manifest.permission.READ_EXTERNAL_STORAGE
@@ -70,6 +73,13 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
     }
 
     public void salvarAnuncio(){
+
+        dialog = new SpotsDialog.Builder()
+                .setContext( this )
+                .setMessage("Salvando Anúncio")
+                .setCancelable( false )
+                .build();
+        dialog.show();
 
         //Salvar imagens no Storage
         for(int i=0; i < listaFotosRecuperadas.size(); i++){
