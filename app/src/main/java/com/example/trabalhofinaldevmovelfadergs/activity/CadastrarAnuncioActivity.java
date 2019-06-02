@@ -20,16 +20,17 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.blackcat.currencyedittext.CurrencyEditText;
-import com.example.trabalhofinaldevmovelfadergs.R;
-import com.example.trabalhofinaldevmovelfadergs.helper.ConfiguracaoFirebase;
-import com.example.trabalhofinaldevmovelfadergs.helper.Permissoes;
-import com.example.trabalhofinaldevmovelfadergs.model.Anuncio;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.example.trabalhofinaldevmovelfadergs.R;
+import com.example.trabalhofinaldevmovelfadergs.helper.ConfiguracaoFirebase;
+import com.example.trabalhofinaldevmovelfadergs.helper.Permissoes;
+import com.example.trabalhofinaldevmovelfadergs.model.Anuncio;
+import com.santalu.maskedittext.MaskEditText;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,21 +39,20 @@ import java.util.Locale;
 import dmax.dialog.SpotsDialog;
 
 public class CadastrarAnuncioActivity extends AppCompatActivity
-            implements View.OnClickListener {
+        implements View.OnClickListener {
 
     private EditText campoTitulo, campoDescricao;
     private ImageView imagem1, imagem2, imagem3;
     private Spinner campoEstado, campoCategoria;
     private CurrencyEditText campoValor;
-    private EditText campoTelefone;
+    private MaskEditText campoTelefone;
     private Anuncio anuncio;
     private StorageReference storage;
-    private android.app.AlertDialog dialog;
+    private AlertDialog dialog;
 
     private String[] permissoes = new String[]{
             Manifest.permission.READ_EXTERNAL_STORAGE
     };
-
     private List<String> listaFotosRecuperadas = new ArrayList<>();
     private List<String> listaURLFotos = new ArrayList<>();
 
@@ -64,12 +64,12 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
         //Configurações iniciais
         storage = ConfiguracaoFirebase.getFirebaseStorage();
 
-
-        //validar permissões
+        //Validar permissões
         Permissoes.validarPermissoes(permissoes, this, 1);
 
         inicializarComponentes();
         carregarDadosSpinner();
+
     }
 
     public void salvarAnuncio(){
@@ -81,38 +81,43 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
                 .build();
         dialog.show();
 
-        //Salvar imagens no Storage
-
-        for(int i=0; i < listaFotosRecuperadas.size(); i++){
+        /**
+         * Salvar imagem no Storage
+         */
+        for (int i=0; i < listaFotosRecuperadas.size(); i++){
             String urlImagem = listaFotosRecuperadas.get(i);
             int tamanhoLista = listaFotosRecuperadas.size();
-            salvarFotoStorage(urlImagem, tamanhoLista, i);
+            salvarFotoStorage(urlImagem, tamanhoLista, i );
         }
 
     }
 
     private void salvarFotoStorage(String urlString, final int totalFotos, int contador){
 
-        //criar referencia no Storage
+        //Criar nó no storage
         StorageReference imagemAnuncio = storage.child("imagens")
                 .child("anuncios")
-                .child(anuncio.getIdAnuncio() )
+                .child( anuncio.getIdAnuncio() )
                 .child("imagem"+contador);
 
-        //Fazer upload dos arquivos de foto
-        UploadTask uploadTask = imagemAnuncio.putFile(Uri.parse(urlString));
+        //Fazer upload do arquivo
+
+       UploadTask uploadTask = imagemAnuncio.putFile( Uri.parse(urlString) );
         uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                //arrumar erro nesta parte do codigo linha sugerida pelo professor
                 Task<Uri> firebaseUrl = taskSnapshot.getStorage().getDownloadUrl();
+                //linha que deveria funcionar
+                //Task<Uri> firebaseUrl = taskSnapshot.getDownloadUrl();
                 String urlConvertida = firebaseUrl.toString();
 
                 listaURLFotos.add( urlConvertida );
 
-                if(totalFotos == listaURLFotos.size() ){
+                if( totalFotos == listaURLFotos.size() ){
                     anuncio.setFotos( listaURLFotos );
                     anuncio.salvar();
-
 
                     dialog.dismiss();
                     finish();
@@ -120,12 +125,10 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
                 }
 
             }
-
-
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                exibirMensagemErro("falha ao fazer upload");
+                exibirMensagemErro("Falha ao fazer upload");
                 Log.i("INFO", "Falha ao fazer upload: " + e.getMessage());
             }
         });
@@ -142,16 +145,16 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
         String descricao = campoDescricao.getText().toString();
 
         Anuncio anuncio = new Anuncio();
-        anuncio.setEstado(estado);
+        anuncio.setEstado( estado );
         anuncio.setCategoria(categoria);
         anuncio.setTitulo(titulo);
         anuncio.setValor(valor);
-        anuncio.setTelefone(telefone);
+        anuncio.setTelefone( telefone );
         anuncio.setDescricao(descricao);
 
         return anuncio;
-    }
 
+    }
 
     public void validarDadosAnuncio(View view){
 
@@ -196,7 +199,6 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
         Toast.makeText(this, texto, Toast.LENGTH_SHORT).show();
     }
 
-
     @Override
     public void onClick(View v) {
         Log.d("onClick", "onClick: " + v.getId() );
@@ -224,49 +226,48 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode == Activity.RESULT_OK){
+        if( resultCode == Activity.RESULT_OK){
 
-            //recuperar imagem
+            //Recuperar imagem
             Uri imagemSelecionada = data.getData();
             String caminhoImagem = imagemSelecionada.toString();
 
-            // configurar imagem no imageview
-            if(requestCode == 1){
-                imagem1.setImageURI(imagemSelecionada);
-                listaFotosRecuperadas.add(caminhoImagem);
-            }else if(requestCode == 2){
-                imagem2.setImageURI(imagemSelecionada);
-            }else if(requestCode == 3){
-                imagem3.setImageURI(imagemSelecionada);
+            //Configura imagem no ImageView
+            if( requestCode == 1 ){
+                imagem1.setImageURI( imagemSelecionada );
+            }else if( requestCode == 2 ){
+                imagem2.setImageURI( imagemSelecionada );
+            }else if( requestCode == 3 ){
+                imagem3.setImageURI( imagemSelecionada );
             }
 
-            listaFotosRecuperadas.add(caminhoImagem);
-
+            listaFotosRecuperadas.add( caminhoImagem );
 
         }
+
     }
 
     private void carregarDadosSpinner(){
 
-//        configurado Spinner de estados
-     String[] estados = getResources().getStringArray(R.array.estados);
+        //Configura spinner de estados
+        String[] estados = getResources().getStringArray(R.array.estados);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(
                 this, android.R.layout.simple_spinner_item,
                 estados
         );
+        adapter.setDropDownViewResource( android.R.layout.simple_spinner_dropdown_item );
+        campoEstado.setAdapter( adapter );
 
-    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-    campoEstado.setAdapter(adapter);
-
-//        configurado Spinner de categorias
+        //Configura spinner de categorias
         String[] categorias = getResources().getStringArray(R.array.categorias);
         ArrayAdapter<String> adapterCategoria = new ArrayAdapter<String>(
                 this, android.R.layout.simple_spinner_item,
                 categorias
         );
+        adapterCategoria.setDropDownViewResource( android.R.layout.simple_spinner_dropdown_item );
+        campoCategoria.setAdapter( adapterCategoria );
 
-        adapterCategoria.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        campoCategoria.setAdapter(adapterCategoria);
+
     }
 
     private void inicializarComponentes(){
@@ -284,9 +285,9 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
         imagem2.setOnClickListener(this);
         imagem3.setOnClickListener(this);
 
-        //configurar portugues brasil para aparecer reais na mascara da moeda
+        //Configura localidade para pt -> portugues BR -> Brasil
         Locale locale = new Locale("pt", "BR");
-        campoValor.setLocale(locale);
+        campoValor.setLocale( locale );
 
     }
 
@@ -294,9 +295,9 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        for (int permissaoResultado : grantResults){
-            if (permissaoResultado == PackageManager.PERMISSION_DENIED){
-               alertaValidacaoPermissao();
+        for( int permissaoResultado : grantResults ){
+            if( permissaoResultado == PackageManager.PERMISSION_DENIED){
+                alertaValidacaoPermissao();
             }
         }
 
@@ -304,7 +305,7 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
 
     private void alertaValidacaoPermissao(){
 
-        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Permissões Negadas");
         builder.setMessage("Para utilizar o app é necessário aceitar as permissões");
         builder.setCancelable(false);
