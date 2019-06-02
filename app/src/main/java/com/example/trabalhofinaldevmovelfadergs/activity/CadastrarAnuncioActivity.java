@@ -2,13 +2,13 @@ package com.example.trabalhofinaldevmovelfadergs.activity;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -89,7 +89,6 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
             salvarFotoStorage(urlImagem, tamanhoLista, i);
         }
 
-
     }
 
     private void salvarFotoStorage(String urlString, final int totalFotos, int contador){
@@ -114,7 +113,12 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
                     anuncio.setFotos( listaURLFotos );
                     anuncio.salvar();
 
+
+                    dialog.dismiss();
+                    finish();
+
                 }
+
             }
 
 
@@ -138,7 +142,6 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
         String descricao = campoDescricao.getText().toString();
 
         Anuncio anuncio = new Anuncio();
-        //anuncio.getIdAnuncio();
         anuncio.setEstado(estado);
         anuncio.setCategoria(categoria);
         anuncio.setTitulo(titulo);
@@ -196,17 +199,15 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
 
     @Override
     public void onClick(View v) {
-
-        switch (v.getId()){
-
+        Log.d("onClick", "onClick: " + v.getId() );
+        switch ( v.getId() ){
             case R.id.imageCadastro1 :
+                Log.d("onClick", "onClick: " );
                 escolherImagem(1);
                 break;
-
             case R.id.imageCadastro2 :
                 escolherImagem(2);
                 break;
-
             case R.id.imageCadastro3 :
                 escolherImagem(3);
                 break;
@@ -302,9 +303,10 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
     }
 
     private void alertaValidacaoPermissao(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
         builder.setTitle("Permissões Negadas");
-        builder.setMessage("Para utilizar o app é nessessário aceitar as permissões");
+        builder.setMessage("Para utilizar o app é necessário aceitar as permissões");
         builder.setCancelable(false);
         builder.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
             @Override
@@ -315,7 +317,6 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
 
         AlertDialog dialog = builder.create();
         dialog.show();
-
 
     }
 

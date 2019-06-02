@@ -13,8 +13,10 @@ public class ConfiguracaoFirebase {
     private static StorageReference referenciaStorage;
 
     public static String getIdUsuario(){
+
         FirebaseAuth autenticacao = getFirebaseAutenticacao();
         return autenticacao.getCurrentUser().getUid();
+
     }
 
     //retorna referencia do database
