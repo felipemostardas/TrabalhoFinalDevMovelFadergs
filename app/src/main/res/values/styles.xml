@@ -1,16 +1,16 @@
 <resources>
-<!-- teste-->
+
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorAccent">@color/colorPrimary</item>
     </style>
 
     <style name="botaoPadrao" parent="Theme.AppCompat.Light">
 
-        <item name="colorControlHighlight">#d500f9</item>
+        <item name="colorControlHighlight">#6197CE</item>
         <item name="colorButtonNormal">@color/colorPrimary</item>
         <item name="android:textColor">@android:color/white</item>
 

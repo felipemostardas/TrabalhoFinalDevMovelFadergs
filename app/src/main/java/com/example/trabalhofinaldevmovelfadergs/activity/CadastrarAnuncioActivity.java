@@ -120,6 +120,7 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
 
                 listaURLFotos.add( urlConvertida );
 
+
                 if( totalFotos == listaURLFotos.size() ){
                     anuncio.setFotos( listaURLFotos );
                     anuncio.salvar();
