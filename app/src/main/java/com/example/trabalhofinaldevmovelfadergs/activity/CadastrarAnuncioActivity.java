@@ -107,15 +107,12 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
-                //ver aqui
-                //Erro nessa parte do código
 
                 //arrumar erro nesta parte do codigo linha sugerida pelo professor
                 Task<Uri> firebaseUrl = taskSnapshot.getStorage().getDownloadUrl();
                 //linha que deveria funcionar
                 //Task<Uri> firebaseUrl = taskSnapshot.getDownloadUrl();
                 String urlConvertida = firebaseUrl.toString();
-
 
 
                 listaURLFotos.add( urlConvertida );

@@ -52,7 +52,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        android:drawableLeft="@drawable/ic_local_roxo_24dp"
+        android:drawableLeft="@drawable/ic_local_azul_24dp"
         android:padding="8dp"
         android:text="SP" />
 
