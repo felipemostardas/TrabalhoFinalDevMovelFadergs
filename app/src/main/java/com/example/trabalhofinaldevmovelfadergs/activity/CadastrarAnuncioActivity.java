@@ -19,7 +19,7 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.blackcat.currencyedittext.CurrencyEditText;
+//import com.blackcat.currencyedittext.CurrencyEditText;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -34,17 +34,17 @@ import com.santalu.maskedittext.MaskEditText;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
+//import java.util.Locale;
 
 import dmax.dialog.SpotsDialog;
 
 public class CadastrarAnuncioActivity extends AppCompatActivity
         implements View.OnClickListener {
 
-    private EditText campoTitulo, campoDescricao;
+    private EditText campoTitulo, campoDescricao, campoValor;
     private ImageView imagem1, imagem2, imagem3;
     private Spinner campoEstado, campoCategoria;
-    private CurrencyEditText campoValor;
+    //private CurrencyEditText campoValor;
     private MaskEditText campoTelefone;
     private Anuncio anuncio;
     private StorageReference storage;
@@ -162,13 +162,13 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
     public void validarDadosAnuncio(View view){
 
         anuncio = configurarAnuncio();
-        String valor = String.valueOf(campoValor.getRawValue());
+        String valor = String.valueOf(campoValor);
 
         if( listaFotosRecuperadas.size() != 0  ){
             if( !anuncio.getEstado().isEmpty() ){
                 if( !anuncio.getCategoria().isEmpty() ){
                     if( !anuncio.getTitulo().isEmpty() ){
-                        if( !valor.isEmpty() && !valor.equals("0") ){
+                        if( !valor.isEmpty()){
                             if( !anuncio.getTelefone().isEmpty()  ){
                                 if( !anuncio.getDescricao().isEmpty() ){
 
@@ -181,7 +181,7 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
                                 exibirMensagemErro("Preencha o campo telefone");
                             }
                         }else {
-                            exibirMensagemErro("Preencha o campo valor");
+                            exibirMensagemErro("Preencha com o produto pelo qual você deseja trocar");
                         }
                     }else {
                         exibirMensagemErro("Preencha o campo título");
@@ -289,8 +289,8 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
         imagem3.setOnClickListener(this);
 
         //Configura localidade para pt -> portugues BR -> Brasil
-        Locale locale = new Locale("pt", "BR");
-        campoValor.setLocale( locale );
+        //Locale locale = new Locale("pt", "BR");
+        //campoValor.setLocale( locale );
 
     }
 

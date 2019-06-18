@@ -66,15 +66,15 @@
         android:inputType="textPersonName"
         android:padding="10dp" />
 
-    <com.blackcat.currencyedittext.CurrencyEditText
+    <EditText
         android:id="@+id/editValor"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:background="@drawable/bg_edit_text"
         android:ems="10"
-        android:hint="R$ 20,50"
-        android:inputType="textPersonName"
+        android:hint="Digite por qual produto você quer trocar o seu"
+        android:inputType="text"
         android:padding="10dp" />
 
     <com.santalu.maskedittext.MaskEditText

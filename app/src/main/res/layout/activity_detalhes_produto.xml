@@ -35,7 +35,7 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:paddingBottom="8dp"
-        android:text="R$ 250"
+        android:text=""
         android:textSize="20sp"
         android:textStyle="bold" />
 

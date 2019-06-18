@@ -42,7 +42,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="R$ 11.000"
+                android:text="Videogame Playstation 4 1tb"
                 android:textSize="18sp"
                 android:textStyle="bold" />
         </LinearLayout>
